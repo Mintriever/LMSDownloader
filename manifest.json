@@ -1,24 +1,14 @@
 {
-  "manifest_version": 2,
-  "name": "DKU Video Downloader",
-  "version": "0.3",
-  "author": "zini",
-  "description": "클릭 몇 번으로 간편하게 이러닝 강의를 저장하고 복습하세요!",
-  "browser_action": {
-    "name": "DKU Video Downloader",
+  "manifest_version": 3,
+  "name": "KHU LearningX Lecture Downloader",
+  "version": "0.1",
+  "author": "mechaminu",
+  "description": "경희대학교 LearningX(eCampus) 강의 다운로드 크롬 확장프로그램. 강의영상 다운로드 exe와 같이 사용해야 합니다.",
+  "action": {
+    "name": "러닝엑스 다운로더",
     "default_icon": "icon-128.png",
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": ["https://dankook.commsonscdn.com/*"],
-      "js": ["popup.js"],
-      "run_at": "document_end"
-    }
-  ],
-  "background": {
-    "scripts": ["background.js"]
-  },
-  "permissions": ["activeTab", "downloads", "*://*/*"],
+  "permissions": ["activeTab", "scripting"],
   "icons": { "16": "icon-16.png", "48": "icon-48.png", "128": "icon-128.png" }
 }

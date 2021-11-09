@@ -1,114 +1,109 @@
-const scanAllBt = document.querySelector('#clms_scan_all_bt');
-const videoBt = document.querySelector('#video_download_bt');
-const helpWrapper = document.querySelector('#help_wrapper');
-const helpBt = document.querySelector('#help_bt');
-
-allButtons = [scanAllBt, videoBt, helpWrapper];
-
 const view = document.querySelector('#wrapper');
-const errmsg_isNotDankook = '단국대학교 이러닝에서만<br />사용할 수 있습니다😢';
-const errmsg_scan = '스캔된 강의가 없어요😢';
-const errmsg_vid = '강의가 아닙니다😢';
-const errmsg_vid_sample = '로딩 영상을 넘겨주세요!';
 
-const downloadInfoDOM = `<div id="download_info"><hr /><div style="margin-top:5px; color: dodgerblue;">파일이름을 지정하세요.</div><input id="filename" type="text" placeholder="기본: screen" /></div><button id="download_start_bt">다운로드 시작</button>`;
+const errmsg_nobackend = '다운로드 프로그램 미작동'
+const errmsg_isNotLearningX = 'LearningX 아님';
+const errmsg_scan = '강의영상 없음';
 
-helpBt.addEventListener('click', () => {
-  window.open('./index.html');
-});
-scanAllBt.addEventListener('click', scanClms);
-videoBt.addEventListener('click', loadDownload);
+(async () => {
+  var tab = await new Promise( r => (chrome.tabs.query({active: true, currentWindow: true})).then( rr => r(rr[0]) ) );
 
-let isFinishToShow = false;
+  view.innerHTML = errmsg_nobackend;
+  try {
+    var ws = new WebSocket('ws://localhost:52022'); // Is there a way to dynamically handshake socket?  
+    await new Promise( r => {
+      ws.onopen = () => {
+        r();
+      }
+    })
+  } 
+  catch
+  {
+    return;
+  }
+  
 
-window.addEventListener('load', () => {
-  chrome.tabs.executeScript(
+  chrome.scripting.executeScript(
     {
-      code: 'window.location.hostname',
+      target: {tabId: tab.id},
+      func: () => {
+        try {
+          return window.document.URL
+        } catch {
+          return null
+        }
+      },
     },
-    (userUrl) => {
-      if (!userUrl[0].includes('dankook')) {
-        allButtons.map((bt) => (bt.style.display = 'none'));
-        view.innerHTML += `<div id="msg_isNotDankook" style="margin:5px 0; color: crimson; display: block;">${errmsg_isNotDankook}</div>`;
-      } else {
-        allButtons.map((bt) => (bt.style.display = 'block'));
-        if (document.querySelector('#msg_isNotDankook')) {
-          document.querySelector('#msg_isNotDankook').style.display = 'none';
+    (result) => {
+      if (result) {
+        url = result[0].result;
+        if (!/https:\/\/[a-zA-Z0-9.]+\/courses\/[0-9]+\/external_tools/g.test(url)) {
+          view.innerHTML = errmsg_isNotLearningX
+        } else {
+          scan();
         }
       }
-    },
+    }
   );
-});
 
-function scanClms() {
-  const videos = [];
-  for (var i = 0; i < 5; i++) {
-    chrome.tabs.executeScript(
+  async function scan() {
+    var videos = [];
+
+    var results = await chrome.scripting.executeScript(
       {
-        code: `document.getElementsByTagName("iframe")[1].contentDocument.getElementsByTagName("iframe")[${i}].contentDocument.getElementsByTagName("iframe")[0].src`,
-      },
-      (clmsUrl) => {
-        if (clmsUrl[0] === null || !clmsUrl) {
-          return listVideos(videos);
-        } else {
-          videos.push(clmsUrl[0]);
+        target: {tabId: tab.id, allFrames: true},
+        func: () => {
+          try {
+            return document.querySelector('iframe.xn-content-frame').src
+          } catch {
+            return null
+          }
         }
-      },
+      }
     );
-  }
-}
 
-function listVideos(videos) {
-  if (isFinishToShow === false) {
-    isFinishToShow = true;
+    for (var res of results) {
+      let url = res.result
+      if (url) {
+        videos.push(url);
+      }
+    }
+
+    listVideos(videos);
+  }
+
+  async function listVideos(videos) {
+    view.innerHTML = '';
     if (videos.length > 0) {
-      let current = 1;
-      view.innerHTML += videos
-        .map((video) => `<a href="${video}" target="_blank">${current++}번 강의 열기</a>`)
-        .join('');
+      for (var video of videos) {
+        var id = video.toString().split('?')[0].split('/').pop();
+        var res = await fetch("https://commons.khu.ac.kr/viewer/ssplayer/uniplayer_support/content.php?content_id=" + id);
+        var text = await res.text();
+        var dom = (new DOMParser()).parseFromString(text, 'text/xml');
+
+        var lectName = dom.getElementsByTagName('title')[0].textContent;
+        var f = dom.getElementsByTagName('main_media')[0];
+        var url = dom.getElementsByTagName('media_uri')[0].textContent.replace('[MEDIA_FILE]',f.textContent) + '?token=' + f.getAttribute('auth_value');
+        var ext = f.textContent.split('.').pop();
+
+
+        var a = document.createElement('a');
+        a.href = video;
+        a.target = '_blank';
+        a.textContent = lectName;
+        a.onclick = () => {
+          try {
+            // websocket으로 backend nodejs websocketserver에 download info json 전달
+            ws.send(JSON.stringify({url:url, filename:lectName+'.'+ext, host:'https://commons.khu.ac.kr/'}));
+
+          } catch (err) {
+            alert(`오류: ${err.message}`);
+          }
+
+        }
+        view.appendChild(a);
+      }
     } else {
       view.innerHTML += `<div style="margin-top:5px; color: crimson;">${errmsg_scan}</div>`;
     }
   }
-}
-
-function loadDownload() {
-  chrome.tabs.executeScript(
-    {
-      code: 'document.querySelector("video").src',
-    },
-    (vidUrl) => {
-      if (chrome.runtime.lastError || vidUrl[0].length < 7 || !vidUrl[0].includes('dankook')) {
-        if (vidUrl[0].includes('preloader')) {
-          view.innerHTML += `<div style="margin-top:5px; color: crimson;">${errmsg_vid_sample}</div>`;
-        } else {
-          view.innerHTML += `<div style="margin-top:5px; color: crimson;">${errmsg_vid}</div>`;
-        }
-      } else {
-        view.innerHTML += `<div id="download_info"><hr /><div style="margin-top:5px; color: dodgerblue;">파일이름을 지정하세요.</div><input id="filename" type="text" placeholder="기본: dankook" /></div><button id="download_start_bt" data-vid=${vidUrl[0]}>다운로드 시작</button>`;
-        bindDownloadFunctionToButton();
-      }
-    },
-  );
-}
-
-function bindDownloadFunctionToButton() {
-  document.getElementById('download_start_bt').addEventListener('click', (e) => {
-    const filename = document.getElementById('filename').value;
-    const videoUrl = e.target.dataset.vid;
-    const ext = videoUrl.split('.').pop();
-    startDownload(filename, videoUrl, ext);
-  });
-}
-
-function startDownload(vidName, vidUrl, ext) {
-  console.log(vidName, vidUrl);
-  if (vidName.length < 1) {
-    vidName = 'dankook';
-  }
-  chrome.runtime.sendMessage({
-    action: 'download',
-    filename: vidName.concat('.' + ext),
-    source: vidUrl,
-  });
-}
+})();
