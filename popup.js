@@ -36,7 +36,7 @@ const errmsg_scan = '강의영상 없음';
     (result) => {
       if (result) {
         url = result[0].result;
-        if (!/https:\/\/[a-zA-Z0-9.]+\/courses\/[0-9]+\/external_tools/g.test(url)) {
+        if (!/https:\/\/[a-zA-Z0-9.]+\/courses\/.+/g.test(url) ) {
           view.innerHTML = errmsg_isNotLearningX
         } else {
           scan();
@@ -53,7 +53,7 @@ const errmsg_scan = '강의영상 없음';
         target: {tabId: tab.id, allFrames: true},
         func: () => {
           try {
-            return document.querySelector('iframe.xn-content-frame').src
+            return document.evaluate('//*[@id="root"]/div/div[2]/div[2]/iframe', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.src
           } catch {
             return null
           }
