@@ -1,14 +1,26 @@
 {
   "manifest_version": 3,
-  "name": "KHU LearningX Lecture Downloader",
-  "version": "0.1",
+  "name": "LearningX Downloader",
+  "version": "0.2",
   "author": "mechaminu",
-  "description": "경희대학교 LearningX(eCampus) 강의 다운로드 크롬 확장프로그램. 강의영상 다운로드 exe와 같이 사용해야 합니다.",
+  "description": "Download videos from LearningX",
   "action": {
-    "name": "러닝엑스 다운로더",
+    "name": "learningx-downloader",
     "default_icon": "icon-128.png",
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab", "scripting"],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "https://khcanvas.khu.ac.kr/*",
+    "https://commons.khu.ac.kr/*",
+    "http://localhost:52022/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "icons": { "16": "icon-16.png", "48": "icon-48.png", "128": "icon-128.png" }
 }
