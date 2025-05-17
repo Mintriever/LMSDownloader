@@ -12,7 +12,8 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "webRequest"
+    "webRequest",
+    "downloads"
   ],
   "host_permissions": [
     "https://canvas.ginue.ac.kr/*",
