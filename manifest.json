@@ -13,13 +13,24 @@
     "activeTab",
     "scripting",
     "webRequest",
-    "downloads"
+    "downloads",
+    "declarativeNetRequest"
   ],
   "host_permissions": [
     "https://canvas.ginue.ac.kr/*",
     "https://cms.ginue.ac.kr/*",
+    "https://ginue-cms-object.cdn.ntruss.com/*",
     "http://localhost:52022/*"
   ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "referer_rules",
+        "enabled": true,
+        "path": "referer_rules.json"
+      }
+    ]
+  },
   "background": {
     "service_worker": "background.js"
   },
