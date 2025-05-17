@@ -5,7 +5,7 @@
     "action": {
       "type": "modifyHeaders",
       "requestHeaders": [
-        { "header": "Referer", "operation": "set", "value": "https://commons.khu.ac.kr/" }
+        { "header": "Referer", "operation": "set", "value": "https://cms.ginue.ac.kr/" }
       ]
     },
     "condition": {
