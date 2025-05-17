@@ -1,17 +1,17 @@
 {
   "manifest_version": 2,
-  "name": "DKU Video Downloader",
+  "name": "GINUE Video Downloader",
   "version": "0.3",
-  "author": "zini",
-  "description": "클릭 몇 번으로 간편하게 이러닝 강의를 저장하고 복습하세요!",
+  "author": "mintriever",
+  "description": "클릭 몇 번으로 간편하게 LMS 강의를 저장하고 복습하세요!",
   "browser_action": {
-    "name": "DKU Video Downloader",
+    "name": "GINUE Video Downloader",
     "default_icon": "icon-128.png",
     "default_popup": "popup.html"
   },
   "content_scripts": [
     {
-      "matches": ["https://dankook.commsonscdn.com/*"],
+      "matches": ["https://ginue-cms-object.cdn.ntruss.com/*"],
       "js": ["popup.js"],
       "run_at": "document_end"
     }
