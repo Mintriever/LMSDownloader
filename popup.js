@@ -68,15 +68,15 @@ async function checkIfLearningX(tabId) {
       return false;
     }
 
-    // If URL is accessible and from khcanvas, no need to inject script
-    if (tab.url.includes('khcanvas.khu.ac.kr')) {
+    // If URL is accessible and from canvas, no need to inject script
+    if (tab.url.includes('canvas.ginue.ac.kr')) {
       return true;
     }
 
     // For other URLs, try executing the script
     const results = await chrome.scripting.executeScript({
       target: {tabId: tabId},
-      func: () => window.location.href.includes('khcanvas.khu.ac.kr')
+      func: () => window.location.href.includes('canvas.ginue.ac.kr')
     });
     
     return results?.[0]?.result || false;
