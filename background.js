@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === 'download') {
-    if (request.source.includes('dankook')) {
+    if (request.source.includes('ginue00001')) {
       try {
         chrome.downloads.download({
           url: request.source,
