@@ -15,8 +15,8 @@
     "webRequest"
   ],
   "host_permissions": [
-    "https://khcanvas.khu.ac.kr/*",
-    "https://commons.khu.ac.kr/*",
+    "https://canvas.ginue.ac.kr/*",
+    "https://lms.ginue.ac.kr/*",
     "http://localhost:52022/*"
   ],
   "background": {
