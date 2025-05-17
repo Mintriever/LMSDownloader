@@ -1,24 +1,26 @@
 {
-  "manifest_version": 2,
-  "name": "GINUE Video Downloader",
+  "manifest_version": 3,
+  "name": "LearningX Downloader",
   "version": "0.3",
-  "author": "mintriever",
-  "description": "클릭 몇 번으로 간편하게 LMS 강의를 저장하고 복습하세요!",
-  "browser_action": {
-    "name": "GINUE Video Downloader",
+  "author": "mechaminu",
+  "description": "Download videos from LearningX",
+  "action": {
+    "name": "learningx-downloader",
     "default_icon": "icon-128.png",
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": ["https://ginue-cms-object.cdn.ntruss.com/*"],
-      "js": ["popup.js"],
-      "run_at": "document_end"
-    }
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "https://canvas.ginue.ac.kr/*",
+    "https://cms.ginue.ac.kr/*",
+    "http://localhost:52022/*"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
-  "permissions": ["activeTab", "downloads", "*://*/*"],
   "icons": { "16": "icon-16.png", "48": "icon-48.png", "128": "icon-128.png" }
 }
