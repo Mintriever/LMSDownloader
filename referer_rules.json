@@ -9,7 +9,7 @@
       ]
     },
     "condition": {
-      "urlFilter": "khu-cms-object.cdn.gov-ntruss.com/",
+      "urlFilter": "ginue-cms-object.cdn.ntruss.com/",
       "resourceTypes": ["xmlhttprequest", "media", "object", "other"]
     }
   }
