@@ -1,7 +1,7 @@
 // background.js
 
 // Pattern to match KHU video endpoints
-const VIDEO_PATTERN = /^https:\/\/commons\.khu\.ac\.kr\/em\/[a-zA-Z0-9]+/;
+const VIDEO_PATTERN = /^https:\/\/cms\.ginue\.ac\.kr\/em\/[a-zA-Z0-9]+/;
 
 // Map of tabId -> Set of video URLs
 const videoMap = {};
