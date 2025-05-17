@@ -22,17 +22,17 @@ chrome.webRequest.onBeforeRequest.addListener(
       videoMap[tabId].add(url);
     }
   },
-  { urls: ["*://commons.khu.ac.kr/em/*"] }
+  { urls: ["*://cms.ginue.ac.kr/em/*"] }
 );
 
 // Declarative Net Request handles Referer modification; remove webRequest listener
 // chrome.webRequest.onBeforeSendHeaders.addListener(
 //   (details) => {
 //     const headers = details.requestHeaders.filter(h => h.name.toLowerCase() !== 'referer');
-//     headers.push({ name: 'Referer', value: 'https://commons.khu.ac.kr/' });
+//     headers.push({ name: 'Referer', value: 'https://cms.ginue.ac.kr/' });
 //     return { requestHeaders: headers };
 //   },
-//   { urls: ['https://khu-cms-object.cdn.gov-ntruss.com/*'] },
+//   { urls: ['https://ginue-cms-object.cdn.ntruss.com/*'] },
 //   ['blocking', 'requestHeaders']
 // );
 
@@ -71,9 +71,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'getMetadata') {
     const id = request.id;
-    const url = `https://commons.khu.ac.kr/viewer/ssplayer/uniplayer_support/content.php?content_id=${id}`;
+    const url = `https://cms.ginue.ac.kr/viewer/ssplayer/uniplayer_support/content.php?content_id=${id}`;
     console.log(`[background.js] getMetadata for content_id: ${id}`);
-    fetch(url, { headers: { 'Referer': 'https://commons.khu.ac.kr/' } })
+    fetch(url, { headers: { 'Referer': 'https://cms.ginue.ac.kr/' } })
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.text();
