@@ -1,1 +1,2 @@
-경인교육대학교 LMS 다운로더입니다. 아직 제작중입니다.
+# learningx-downloader
+경인교육대학교 LMS 강의 다운로드용 Chrome extension. (제작중)
