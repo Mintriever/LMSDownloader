@@ -16,7 +16,7 @@
   ],
   "host_permissions": [
     "https://canvas.ginue.ac.kr/*",
-    "https://lms.ginue.ac.kr/*",
+    "https://cms.ginue.ac.kr/*",
     "http://localhost:52022/*"
   ],
   "background": {
